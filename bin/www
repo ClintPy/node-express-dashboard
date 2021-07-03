@@ -46,8 +46,8 @@ wss.on("connection", (ws) => {
     // Register a lister for the WebSocket "message" event
     fs.watch(filePath, () => {
       fs.createReadStream(filePath).on("data", (chunk) => {
-        let logsArray = chunk.toString().split("\n");
-        let logStr = logsArray.reverse().join("\n");
+        let logsArr = chunk.toString().split("\n");
+        let logsStr = logsArr.reverse().join("\n");
         ws.send(logStr);
       });
     }); // Send stream
