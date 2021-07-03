@@ -6,7 +6,7 @@ const dir = process.cwd()
 function getDirectoryContents(files, currentDir, query) {
   const data = [];
   files.forEach((file) => {
-    if (file.isDirectory()) {
+    if (isDirectory(file)) {
       data.push({
         name: file,
         isDirectory: true,
