@@ -48,7 +48,7 @@ wss.on("connection", (ws) => {
       fs.createReadStream(filePath).on("data", (chunk) => {
         let logsArr = chunk.toString().split("\n");
         let logsStr = logsArr.reverse().join("\n");
-        ws.send(logStr);
+        ws.send(logsStr);
       });
     }); // Send stream
   });
