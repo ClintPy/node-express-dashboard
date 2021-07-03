@@ -7,7 +7,9 @@
 const app = require("../app");
 const debug = require("debug")("log-dashboard:server");
 const http = require("http");
-const WebSocket = require('ws'); // ws library
+const WebSocket = require("ws"); // ws library
+const fs = require("fs");
+const { chunk } = require("lodash");
 
 /**
  * Get port from environment and store in Express.
@@ -38,11 +40,19 @@ server.on("listening", onListening);
 /**
  * Listen on WebSocket Server
  */
-wss.on("connection", ws => { // Register a listener for the WebSocket server "connection" event
-  ws.on("message", message => { // Register a lister for the WebSocket "message" event
-    ws.send(`Hello from the server! You sent: ${message}`) // Send a simplet WebSocket echo message to the client
-  })
-})
+wss.on("connection", (ws) => {
+  // Register a listener for the WebSocket server "connection" event
+  ws.on("message", (filePath) => {
+    // Register a lister for the WebSocket "message" event
+    fs.watch(filePath, () => {
+      fs.createReadStream(filePath).on("data", (chunk) => {
+        let logsArray = chunk.toString().split("\n");
+        let logStr = logsArray.reverse().join("\n");
+        ws.send(logStr);
+      });
+    }); // Send stream
+  });
+});
 
 /**
  * Normalize a port into a number, string, or false.
@@ -73,9 +83,7 @@ function onError(error) {
     throw error;
   }
 
-  const bind = typeof port === "string"
-    ? "Pipe " + port
-    : "Port " + port;
+  const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -98,8 +106,6 @@ function onError(error) {
 
 function onListening() {
   const addr = server.address();
-  const bind = typeof addr === "string"
-    ? "pipe " + addr
-    : "port " + addr.port;
+  const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
 }
