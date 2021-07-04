@@ -3,10 +3,6 @@ const path = require("path");
 
 let dir = process.cwd();
 
-exports setcwd = (cwd) => {
-    cwd = dir
-}
-
 function getDirectoryContents(files, currentDir, query) {
   const data = [];
   files.forEach((file) => {
