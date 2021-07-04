@@ -1,7 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 
-let dir = process.cwd();
+let dir;
+
+exports.setcwd = (cwd) => {
+    dir = cwd;
+}
 
 function getDirectoryContents(files, currentDir, query) {
   const data = [];
